@@ -1,3 +1,6 @@
+<!-- Pastikan Alpine.js ada -->
+<script src="https://unpkg.com/alpinejs" defer></script>
+
 <nav class="fixed top-0 left-0 w-full bg-black bg-opacity-90 text-white shadow-md z-50 py-3">
     <div class="flex items-center justify-between w-full px-6">
         
@@ -7,12 +10,37 @@
             <span class="text-3xl font-black text-[#F26417]">Trickets</span>
         </div>
 
-        {{-- Menu Tengah --}}
-        <ul class="hidden md:flex space-x-12 font-semibold text-lg">
-            <li><a href="#" class="hover:text-[#F26417] transition-colors">HOME</a></li>
-            <li><a href="#" class="hover:text-[#F26417] transition-colors">ABOUT US</a></li>
-            <li><a href="#" class="hover:text-[#F26417] transition-colors">EVENT</a></li>
-            <li><a href="#" class="hover:text-[#F26417] transition-colors">CONTACT</a></li>
+        <!-- Menu -->
+        <ul class="flex space-x-8 font-semibold text-lg relative">
+        
+            <!-- HOME Dropdown -->
+            <li class="relative" x-data="{ open: false }">
+                <button @click="open = !open" class="flex items-center space-x-1 hover:text-[#F26417] transition">
+                    <span>HOME</span>
+                    <span class="text-[#F26417] font-bold">+</span>
+                </button>
+
+                <!-- Dropdown (toggle) -->
+                <ul x-show="open" 
+                    @click.away="open = false"
+                    x-transition
+                    class="absolute bg-black text-white mt-2 w-48 shadow-lg border border-gray-700">
+                    <li>
+                        <a href="{{ route('home.musik') }}" 
+                           class="block px-4 py-2 hover:bg-[#F26417] transition">
+                            Trickets Musik
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('home.konferensi') }}" 
+                           class="block px-4 py-2 hover:bg-[#F26417] transition">
+                            Trickets Konferensi
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li><a href="{{ route('events.index') }}" class="hover:text-[#F26417] transition">EVENT</a></li>
+            <li><a href="#" class="hover:text-[#F26417] transition">CONTACT</a></li>
         </ul>
 
         {{-- Actions --}}
@@ -20,7 +48,7 @@
             <button class="hover:text-[#F26417] text-xl transition-colors">
                 <i class="fas fa-search"></i>
             </button>
-            <a href="#" class="btn-custom py-2 px-6">
+            <a href="{{ route('tiket.index') }}" class="btn-custom py-2 px-6">
                 BELI TIKET
             </a>
         </div>

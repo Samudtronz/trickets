@@ -23,16 +23,18 @@
     </script>
 
     <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
-
-    <!-- Font Awesome untuk icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body class="bg-white text-gray-900 font-sans">
+
+    {{-- Preloader --}}
+    <div class="loader-mask">
+        <div class="loader">
+            <div></div>
+            <div></div>
+        </div>
+    </div>
 
     {{-- Navbar --}}
     @include('partials.navbar')
@@ -42,7 +44,14 @@
         @yield('content')
     </main>
 
-    {{-- Footer can be added here later --}}
+    {{-- Footer --}}
+    @includeWhen(View::exists('partials.footer'), 'partials.footer')
 
+    <script>
+        // Preloader fade out
+        window.addEventListener('load', () => {
+            document.querySelector('.loader-mask').style.display = 'none';
+        });
+    </script>
 </body>
 </html>
