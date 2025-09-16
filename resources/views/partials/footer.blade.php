@@ -42,7 +42,6 @@
                         </li>
                     </ul>
                 </li><a href="{{ route('events.index') }}" class="hover:text-white transition">Events</a></li>
-                <li><a href="#" class="hover:text-white transition">Contact</a></li>
             </ul>
         </div>
 

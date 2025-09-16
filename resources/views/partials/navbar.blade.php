@@ -40,7 +40,6 @@
                 </ul>
             </li>
             <li><a href="{{ route('events.index') }}" class="hover:text-[#F26417] transition">EVENT</a></li>
-            <li><a href="#" class="hover:text-[#F26417] transition">CONTACT</a></li>
         </ul>
 
         {{-- Actions --}}

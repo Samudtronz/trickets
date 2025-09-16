@@ -1,34 +1,50 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\EventDetailController;
+use App\Http\Controllers\KonferensiController;
+use App\Http\Controllers\MusikController;
 use App\Http\Controllers\TiketController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\HomeController;
 
-
+// Halaman Welcome
 Route::get('/welcome', function () {
     return view('welcome');
 });
 
-// Halaman Home Musik
-Route::get('/home-musik', [HomeController::class, 'musik'])->name('home.musik');
+// ===============================
+// HOME PAGES
+// ===============================
 
-// Halaman Home Konferensi
-Route::get('/home-konferensi', [HomeController::class, 'kons'])->name('home.konferensi');
+// Home Musik
+Route::get('/home-musik', [MusikController::class, 'index'])->name('home.musik');
 
-// Detail Event Musik
-Route::get('/event/musik/', [EventDetailController::class, 'musik'])->name('detail.musik');
+// Home Konferensi
+Route::get('/home-konferensi', [KonferensiController::class, 'index'])->name('home.konferensi');
 
-// Detail Event Konferensi
-Route::get('/event/konferensi/', [EventDetailController::class, 'kons'])->name('detail.konferensi');
+// ===============================
+// DETAIL EVENT
+// ===============================
 
-//TIKET
+// Detail Event Musik (hardcode)
+Route::get('/event/musik', [MusikController::class, 'show'])->name('detail.musik');
+
+// Detail Event Konferensi (dynamic API)
+Route::get('/home-konferensi/detail/{id}', [KonferensiController::class, 'show'])->name('detail.konferensi');
+
+// ===============================
+// TIKET
+// ===============================
+
 // Daftar tiket
 Route::get('/tiket', [TiketController::class, 'index'])->name('tiket.index');
 
 // Detail tiket
 Route::get('/tiket/detail', [TiketController::class, 'show'])->name('tiket.show');
 
-// Daftar semua event
+// ===============================
+// GABUNGAN EVENT
+// ===============================
+
+// Halaman daftar semua event gabungan (konferensi + musik)
 Route::get('/events', [EventController::class, 'index'])->name('events.index');
