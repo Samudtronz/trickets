@@ -7,64 +7,58 @@ use Illuminate\Support\Facades\Http;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // ==========================
-        // Ambil data konferensi dari API
-        // ==========================
-        $konferensi = [];
+        $events = [];
+        $trending = null;
+
+        $apiKonferensi = 'http://192.168.100.65/projek-services/gateway-service/api/Userkonferensi';
         try {
-            $response = Http::withHeaders([
-                'X-GATEWAY-KONFERENSI' => config('services.konferensi_service.key'),
-            ])->get(config('services.konferensi_service.url') . '/api/Userkonferensi');
+            $response = Http::get($apiKonferensi);
 
             if ($response->successful()) {
-                $json = $response->json();
-                $konferensi = $json['data'] ?? [];
+                $dataKonferensi = $response->json()['data'] ?? [];
+
+                // Cari trending berdasarkan kuota tertinggi
+                if (!empty($dataKonferensi)) {
+                    $trendingItem = collect($dataKonferensi)->sortByDesc('kuota')->first();
+                    if ($trendingItem) {
+                        $trending = [
+                            'id' => $trendingItem['id'],
+                            'judul' => $trendingItem['judul'] ?? '-',
+                            'tanggal' => $trendingItem['tanggal'] ?? now(),
+                            'lokasi' => $trendingItem['lokasi'] ?? '-',
+                            'kuota' => $trendingItem['kuota'] ?? 0,
+                            'foto' => isset($trendingItem['foto_event']) 
+                                ? url("http://192.168.100.65/projek-services/konferensi-service/storage/{$trendingItem['foto_event']}")
+                                : 'assets/images/no-image.png',
+                            'pembicara' => $trendingItem['pembicara'] ?? null,
+                            'genre' => null,
+                        ];
+                    }
+
+                    // Buat list event tanpa trending
+                    foreach ($dataKonferensi as $item) {
+                        $events[] = [
+                            'id' => $item['id'], // penting untuk detail link
+                            'judul' => $item['judul'] ?? '-',
+                            'tanggal' => $item['tanggal'] ?? now(),
+                            'lokasi' => $item['lokasi'] ?? '-',
+                            'kuota' => $item['kuota'] ?? 0,
+                            'foto' => isset($item['foto_event']) 
+                                ? url("http://192.168.100.65/projek-services/konferensi-service/storage/{$item['foto_event']}")
+                                : 'assets/images/no-image.png',
+                            'pembicara' => $item['pembicara'] ?? null,
+                            'genre' => null, // musik masih kosong
+                        ];
+                    }
+
+                }
             }
         } catch (\Exception $e) {
-            \Log::error('Gagal mengambil data konferensi', ['message' => $e->getMessage()]);
+            \Log::error('Gagal mengambil konferensi', ['message' => $e->getMessage()]);
         }
 
-        // ==========================
-        // Musik hardcode
-        // ==========================
-        $musik = [
-            [
-                'judul' => 'Jazz Malam',
-                'tanggal' => '2025-12-22',
-                'lokasi' => 'Taman Budaya, Yogyakarta',
-                'kuota' => 500,
-                'genre' => 'Jazz',
-                'foto' => asset('assets/images/events/musik1.jpg'),
-            ],
-            [
-                'judul' => 'Rock Nation',
-                'tanggal' => '2026-01-10',
-                'lokasi' => 'Stadion Utama GBK',
-                'kuota' => 1000,
-                'genre' => 'Rock',
-                'foto' => asset('assets/images/events/musik2.jpg'),
-            ],
-        ];
-
-        // ==========================
-        // Gabungkan konferensi + musik
-        // ==========================
-        $events = array_merge(
-            array_map(fn($k) => [
-                'judul' => $k['judul'] ?? 'Judul Konferensi',
-                'tanggal' => $k['tanggal'] ?? null,
-                'lokasi' => $k['lokasi'] ?? 'Lokasi belum ditentukan',
-                'kuota' => $k['kuota'] ?? 0,
-                'pembicara' => $k['pembicara'] ?? '-',
-                'foto' => isset($k['foto_event']) 
-                    ? "http://192.168.100.65/projek-services/konferensi-service/storage/{$k['foto_event']}" 
-                    : asset('assets/images/events/fallback-konferensi.jpg'),
-            ], $konferensi),
-            $musik
-        );
-
-        return view('events.index', compact('events'));
+        return view('events.index', compact('events', 'trending'));
     }
 }

@@ -8,7 +8,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
 
 // Halaman Welcome
-Route::get('/welcome', function () {
+Route::get('/', function () {
     return view('welcome');
 });
 
@@ -40,11 +40,7 @@ Route::get('/home-konferensi/detail/{id}', [KonferensiController::class, 'show']
 Route::get('/tiket', [TiketController::class, 'index'])->name('tiket.index');
 
 // Detail tiket
-Route::get('/tiket/detail', [TiketController::class, 'show'])->name('tiket.show');
-
-// ===============================
-// GABUNGAN EVENT
-// ===============================
+Route::get('/tiket/detail/{id}', [TiketController::class, 'show'])->name('tiket.show');
 
 // Halaman daftar semua event gabungan (konferensi + musik)
 Route::get('/events', [EventController::class, 'index'])->name('events.index');

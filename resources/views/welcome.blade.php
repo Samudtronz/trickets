@@ -19,7 +19,7 @@
                     "Temukan dan pesan tiket event favoritmu dengan mudah, mulai dari konser, festival, hingga konferensi. Dengan platform yang cepat, aman, dan praktis, kamu bisa memastikan tempatmu hanya dengan beberapa klik."
                 </p>
 
-                <a href="{{ rand(0,1) ? route('home.kons') : route('home.musik') }}" 
+                <a href="{{ rand(0,1) ? route('home.konferensi') : route('home.musik') }}" 
                 class="btn-custom text-lg lg:text-xl px-10 py-4">
                 AYO MULAI
                 </a>
