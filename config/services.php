@@ -31,4 +31,20 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'auth_service' => [
+        'url' => env('AUTH_SERVICE_URL'),
+        'key' => env('GATEWAY_KEY_USER'),
+    ],
+
+    'konferensi_service' => [
+        'url' => env('KONFERENSI_SERVICE_URL'),
+        'key' => env('GATEWAY_KEY_KONFERENSI'),
+    ],
+
+    'tiket_service' => [
+        'url' => env('TIKET_SERVICE_URL'),
+        'key' => env('GATEWAY_KEY_TIKET'),
+    ],
+
+
 ];

@@ -26,20 +26,20 @@
                     x-transition
                     class="absolute bg-black text-white mt-2 w-48 shadow-lg border border-gray-700">
                     <li>
-                        <a href="{{ route('home.musik') }}" 
+                        <a href="{{ route('frontend.home.musik') }}" 
                            class="block px-4 py-2 hover:bg-[#F26417] transition">
                             Trickets Musik
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('home.konferensi') }}" 
+                        <a href="{{ route('frontend.home.konferensi') }}" 
                            class="block px-4 py-2 hover:bg-[#F26417] transition">
                             Trickets Konferensi
                         </a>
                     </li>
                 </ul>
             </li>
-            <li><a href="{{ route('events.index') }}" class="hover:text-[#F26417] transition">EVENT</a></li>
+            <li><a href="{{ route('frontend.events.index') }}" class="hover:text-[#F26417] transition">EVENT</a></li>
         </ul>
 
         {{-- Actions --}}
@@ -47,7 +47,7 @@
             <button class="hover:text-[#F26417] text-xl transition-colors">
                 <i class="fas fa-search"></i>
             </button>
-            <a href="{{ route('tiket.index') }}" class="btn-custom py-2 px-6">
+            <a href="{{ route('frontend.tiket.index') }}" class="btn-custom py-2 px-6">
                 BELI TIKET
             </a>
         </div>

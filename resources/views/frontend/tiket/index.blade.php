@@ -34,7 +34,7 @@ Tiket List Area
                         @endif
                     </ul>
 
-                    <a href="{{ route('tiket.show', $tiket['id']) }}"
+                    <a href="{{ route('frontend.tiket.show', $tiket['id']) }}"
                        class="mt-8 block text-center bg-[#F26417] py-3 rounded-xl font-bold text-white hover:bg-orange-600 transition
                        {{ $tiket['status'] === 'sold' ? 'pointer-events-none opacity-50' : '' }}">
                        Beli Tiket

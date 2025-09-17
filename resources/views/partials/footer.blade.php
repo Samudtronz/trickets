@@ -29,19 +29,19 @@
                         x-transition
                         class="absolute bg-black text-white mt-2 w-48 shadow-lg border border-gray-700">
                         <li>
-                            <a href="{{ route('home.musik') }}" 
+                            <a href="{{ route('frontend.home.musik') }}" 
                             class="block px-4 py-2 hover:bg-[#F26417] transition">
                                 Trickets Musik
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('home.konferensi') }}" 
+                            <a href="{{ route('frontend.home.konferensi') }}" 
                             class="block px-4 py-2 hover:bg-[#F26417] transition">
                                 Trickets Konferensi
                             </a>
                         </li>
                     </ul>
-                </li><a href="{{ route('events.index') }}" class="hover:text-white transition">Events</a></li>
+                </li><a href="{{ route('frontend.events.index') }}" class="hover:text-white transition">Events</a></li>
             </ul>
         </div>
 

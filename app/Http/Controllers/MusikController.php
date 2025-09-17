@@ -9,12 +9,12 @@ class MusikController extends Controller
     // Detail Musik (statis)
     public function index()
     {
-        return view('home.musik');
+        return view('frontend.home.musik');
     }
 
         public function show()
     {
-        return view('detail.musik');
+        return view('frontend.detail.musik');
     }
 
 }

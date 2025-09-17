@@ -16,15 +16,12 @@ class TiketController extends Controller
         ];
 
         try {
-            // Ambil semua tiket konferensi
-            $tiketResponse = Http::get('http://192.168.100.65/projek-services/gateway-service/api/Usertiket');
+            $tiketResponse = Http::get(config('services.tiket_service.url') . '/api/Usertiket');
             $tiketData = $tiketResponse->successful() ? $tiketResponse->json()['data'] : [];
 
-            // Ambil semua event konferensi
-            $eventResponse = Http::get('http://192.168.100.65/projek-services/gateway-service/api/Userkonferensi');
+            $eventResponse = Http::get(config('services.konferensi_service.url') . '/api/Userkonferensi');
             $eventData = $eventResponse->successful() ? $eventResponse->json()['data'] : [];
 
-            // Buat map id_event => event_detail
             $eventMap = [];
             foreach ($eventData as $event) {
                 $eventMap[$event['id']] = [
@@ -35,7 +32,6 @@ class TiketController extends Controller
                 ];
             }
 
-            // Loop tiket
             foreach ($tiketData as $tiket) {
                 $eventDetail = $eventMap[$tiket['id_event']] ?? [
                     'judul' => '-',
@@ -47,8 +43,10 @@ class TiketController extends Controller
                 $tiketFull = array_merge($tiket, $eventDetail);
 
                 $jenis = strtolower($tiket['jenis_tiket'] ?? 'regular');
-                if (in_array($jenis, ['regular', 'business', 'vip'])) {
-                    $tickets[$jenis][] = $tiketFull;
+                $mapJenis = ['regular' => 'regular', 'business' => 'business', 'vip' => 'VIP'];
+
+                if (isset($mapJenis[$jenis])) {
+                    $tickets[$mapJenis[$jenis]][] = $tiketFull;
                 }
             }
 
@@ -56,24 +54,21 @@ class TiketController extends Controller
             \Log::error('Gagal mengambil tiket/konferensi', ['message' => $e->getMessage()]);
         }
 
-        return view('tiket.index', compact('tickets'));
+        return view('frontend.tiket.index', compact('tickets'));
     }
 
-    
     public function show($id)
     {
         $tiket = null;
         $eventDetail = null;
 
         try {
-            // Ambil tiket berdasarkan id
-            $tiketResponse = Http::get("http://192.168.100.65/projek-services/gateway-service/api/Usertiket/{$id}");
+            $tiketResponse = Http::get(config('services.tiket_service.url') . "/api/Usertiket/{$id}");
             if ($tiketResponse->successful()) {
                 $tiket = $tiketResponse->json()['data'] ?? null;
 
                 if ($tiket && !empty($tiket['id_event'])) {
-                    // Ambil detail event
-                    $eventResponse = Http::get("http://192.168.100.65/projek-services/gateway-service/api/Userkonferensi/{$tiket['id_event']}");
+                    $eventResponse = Http::get(config('services.konferensi_service.url') . "/api/Userkonferensi/{$tiket['id_event']}");
                     if ($eventResponse->successful()) {
                         $eventDetail = $eventResponse->json()['data'] ?? null;
                     }
@@ -83,6 +78,7 @@ class TiketController extends Controller
             \Log::error('Gagal mengambil detail tiket', ['message' => $e->getMessage()]);
         }
 
-        return view('tiket.show', compact('tiket', 'eventDetail'));
+        return view('frontend.tiket.show', compact('tiket', 'eventDetail'));
     }
 }
+

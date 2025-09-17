@@ -9,7 +9,7 @@ use App\Http\Controllers\HomeController;
 
 // Halaman Welcome
 Route::get('/', function () {
-    return view('welcome');
+    return view('frontend.welcome');
 });
 
 // ===============================
@@ -17,30 +17,30 @@ Route::get('/', function () {
 // ===============================
 
 // Home Musik
-Route::get('/home-musik', [MusikController::class, 'index'])->name('home.musik');
+Route::get('/home-musik', [MusikController::class, 'index'])->name('frontend.home.musik');
 
 // Home Konferensi
-Route::get('/home-konferensi', [KonferensiController::class, 'index'])->name('home.konferensi');
+Route::get('/home-konferensi', [KonferensiController::class, 'index'])->name('frontend.home.konferensi');
 
 // ===============================
 // DETAIL EVENT
 // ===============================
 
-// Detail Event Musik (hardcode)
-Route::get('/event/musik', [MusikController::class, 'show'])->name('detail.musik');
+// Detail Event Musik (dynamic)
+Route::get('/event/musik', [MusikController::class, 'show'])->name('frontend.detail.musik');
 
 // Detail Event Konferensi (dynamic API)
-Route::get('/home-konferensi/detail/{id}', [KonferensiController::class, 'show'])->name('detail.konferensi');
+Route::get('/home-konferensi/detail/{id}', [KonferensiController::class, 'show'])->name('frontend.detail.konferensi');
 
 // ===============================
 // TIKET
 // ===============================
 
 // Daftar tiket
-Route::get('/tiket', [TiketController::class, 'index'])->name('tiket.index');
+Route::get('/tiket', [TiketController::class, 'index'])->name('frontend.tiket.index');
 
 // Detail tiket
-Route::get('/tiket/detail/{id}', [TiketController::class, 'show'])->name('tiket.show');
+Route::get('/tiket/detail/{id}', [TiketController::class, 'show'])->name('frontend.tiket.show');
 
 // Halaman daftar semua event gabungan (konferensi + musik)
-Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/events', [EventController::class, 'index'])->name('frontend.events.index');

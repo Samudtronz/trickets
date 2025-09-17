@@ -18,8 +18,8 @@
             </div>
 
             <div class="flex space-x-4 pt-6">
-                <a href="{{ route('detail.konferensi', $trending['id']) }}" class="btn-custom">BELI TIKET</a>
-                <a href="{{ route('detail.konferensi', $trending['id']) }}"
+                <a href="{{ route('frontend.detail.konferensi', $trending['id']) }}" class="btn-custom">BELI TIKET</a>
+                <a href="{{ route('frontend.detail.konferensi', $trending['id']) }}"
                    class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-black transition">
                     DETAIL EVENT
                 </a>

@@ -90,29 +90,46 @@
         {{-- SIDEBAR --}}
         <div class="bg-gray-900 p-6 rounded-xl space-y-6">
             <div class="text-center">
-                <h3 class="text-xl font-bold">Harga & Kuota</h3>
-                <p class="text-3xl font-extrabold text-primary-500 mt-2">
-                    Rp {{ number_format( (float) ($event['harga'] ?? 0), 0, ',', '.') }}
-                </p>
-                <p class="text-gray-400 mt-1">
-                    Sisa Kuota: {{ $event['kuota'] ?? 'Tidak diketahui' }}
-                </p>
+                <h3 class="text-xl font-bold">Kuota & Tanggal</h3>
+
+                {{-- Kuota --}}
+                <div class="mt-4">
+                    <p class="text-gray-400 mb-1">Sisa Kuota</p>
+                    <p class="text-4xl font-extrabold text-[#F26417]">
+                        {{ $event['kuota'] ?? 'Tidak diketahui' }}
+                    </p>
+                    <span class="text-sm text-gray-500">peserta</span>
+                </div>
+
+                {{-- Tanggal --}}
+                <div class="mt-6">
+                    <p class="text-gray-400 mb-1">Tanggal Event</p>
+                    <p class="text-lg font-semibold text-white">
+                        @if (!empty($event['tanggal']))
+                            {{ \Carbon\Carbon::parse($event['tanggal'])->format('d F Y') }}
+                        @else
+                            Belum ditentukan
+                        @endif
+                    </p>
+                </div>
             </div>
 
             {{-- Countdown --}}
             <div class="text-center bg-gray-800 p-4 rounded-lg">
                 <h4 class="font-semibold mb-2">Hitung Mundur</h4>
                 <div id="countdown" class="text-lg font-bold">
-                    @if (empty($event['tanggal']))
+                    @if (empty($eventDetail['tanggal']))
                         Tanggal belum ditentukan
                     @endif
                 </div>
             </div>
 
-            <a href="#" class="block w-full bg-primary-500 hover:bg-primary-600 text-center py-3 rounded-lg font-bold text-white transition">
+            <a href="#"
+            class="block w-full bg-[#F26417] hover:bg-orange-600 text-center py-3 rounded-lg font-bold text-white transition">
                 BELI TIKET
             </a>
         </div>
+
     </div>
 </section>
 

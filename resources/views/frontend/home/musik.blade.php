@@ -21,7 +21,7 @@
             {{-- Tombol --}}
             <div class="flex space-x-4 pt-6">
                 <a href="#" class="btn-custom">BELI TIKET</a>
-                <a href="{{ route('detail.musik') }}" 
+                <a href="{{ route('frontend.detail.musik') }}" 
                 class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-black transition">
                     DETAIL EVENT
                 </a>

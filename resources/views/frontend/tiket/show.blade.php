@@ -21,7 +21,7 @@
                     <p><b>Pembicara:</b> {{ $eventDetail['pembicara'] }}</p>
                 @endif
 
-                <a href="{{ route('tiket.index') }}"
+                <a href="{{ route('frontend.tiket.index') }}"
                  class="mt-6 inline-block bg-[#F26417] hover:bg-orange-600 px-6 py-3 rounded-xl font-bold">
                     Beli Tiket
                 </a>

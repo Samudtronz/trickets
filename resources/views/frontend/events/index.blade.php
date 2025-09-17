@@ -25,7 +25,7 @@
                 <p class="text-gray-400">🎵 Genre: {{ $event['genre'] }}</p>
             @endif
 
-           <a href="{{ route('detail.konferensi', $event['id']) }}" 
+           <a href="{{ route('frontend.detail.konferensi', $event['id']) }}" 
                 class="mt-4 inline-block bg-[#F26417] hover:bg-orange-600 px-4 py-2 rounded-lg font-bold">
                 Beli Tiket
             </a>

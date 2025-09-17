@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class KonferensiController extends Controller
 {
@@ -30,7 +32,7 @@ class KonferensiController extends Controller
                 $currentPage = $request->input('page', 1);
                 $pagedData = $eventsCollection->slice(($currentPage - 1) * $perPage, $perPage)->values();
 
-                $events = new \Illuminate\Pagination\LengthAwarePaginator(
+                $events = new LengthAwarePaginator(
                     $pagedData,
                     $eventsCollection->count(),
                     $perPage,
@@ -39,12 +41,12 @@ class KonferensiController extends Controller
                 );
             } else {
                 $trending = null;
-                $events = collect([]);
+                $events = new LengthAwarePaginator([], 0, 5, 1);
             }
         } catch (\Exception $e) {
             \Log::error('Gagal mengambil konferensi', ['message' => $e->getMessage()]);
             $trending = null;
-            $events = collect([]);
+            $events = new LengthAwarePaginator([], 0, 5, 1);
         }
 
         // kalau request via AJAX → render partial
@@ -52,9 +54,7 @@ class KonferensiController extends Controller
             return view('home.partials.event-list', compact('events'))->render();
         }
 
-        
-
-        return view('home.konferensi', compact('trending', 'events'));
+        return view('frontend.home.konferensi', compact('trending', 'events'));
     }
 
     public function show($id)
@@ -69,7 +69,7 @@ class KonferensiController extends Controller
 
                 // pastikan event punya ID, kalau tidak berarti kosong
                 if (!empty($event['id'])) {
-                    return view('detail.konferensi', compact('event'));
+                    return view('frontend.detail.konferensi', compact('event'));
                 }
             }
 
@@ -79,10 +79,7 @@ class KonferensiController extends Controller
                 'message' => $e->getMessage()
             ]);
 
-            //dd($event);
-            
             return view('detail.konferensi', ['event' => null]);
         }
     }
-
 }

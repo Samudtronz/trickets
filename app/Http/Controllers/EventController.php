@@ -59,6 +59,6 @@ class EventController extends Controller
             \Log::error('Gagal mengambil konferensi', ['message' => $e->getMessage()]);
         }
 
-        return view('events.index', compact('events', 'trending'));
+        return view('frontend.events.index', compact('events', 'trending'));
     }
 }

@@ -59,7 +59,7 @@
         {{-- SIDEBAR --}}
         <div class="bg-gray-900 p-6 rounded-xl space-y-6">
             <div class="text-center">
-                <h3 class="text-xl font-bold">Harga & Kuota</h3>
+                <h3 class="text-xl font-bold">Kuota</h3>
                 <p class="text-3xl font-extrabold text-primary-500 mt-2">
                     Rp {{ number_format($event->harga ?? 0, 0, ',', '.') }}
                 </p>

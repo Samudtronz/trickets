@@ -2,8 +2,8 @@
     @forelse ($events as $event)
         <div class="bg-gray-900 rounded-xl p-6 flex items-center justify-between">
             <div class="flex items-center space-x-6">
-                <img src="http://192.168.100.65/projek-services/konferensi-service/storage/{{ $event['foto_event'] ?? '' }}" 
-                     alt="{{ $event['judul'] ?? 'Event' }}" 
+                <img src="http://192.168.100.65/projek-services/konferensi-service/storage/{{ $event['foto_event'] ?? '' }}"
+                     alt="{{ $event['judul'] ?? 'Event' }}"
                      class="w-32 h-24 rounded-lg object-cover">
                 <div>
                     <h3 class="text-xl font-bold text-white">{{ $event['judul'] }}</h3>
@@ -12,8 +12,8 @@
                 </div>
             </div>
             <div class="flex space-x-3">
-                <a href="{{ route('tiket.index') }}" class="bg-primary-500 text-white px-5 py-2 rounded-lg font-bold">Beli Tiket</a>
-                <a href="{{ route('detail.konferensi', $event['id']) }}" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-bold">Detail Event</a>
+                <a href="{{ route('frontend.tiket.index') }}" class="bg-primary-500 text-white px-5 py-2 rounded-lg font-bold">Beli Tiket</a>
+                <a href="{{ route('frontend.detail.konferensi', $event['id']) }}" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-bold">Detail Event</a>
             </div>
         </div>
     @empty
@@ -21,6 +21,8 @@
     @endforelse
 </div>
 
-<div class="flex justify-center mt-10 pagination">
-    {{ $events->links('pagination::tailwind') }}
-</div>
+@if(method_exists($events, 'links'))
+    <div class="flex justify-center mt-10 pagination">
+        {{ $events->links('pagination::tailwind') }}
+    </div>
+@endif
