@@ -5,12 +5,11 @@ use App\Http\Controllers\KonferensiController;
 use App\Http\Controllers\MusikController;
 use App\Http\Controllers\TiketController;
 use App\Http\Controllers\EventController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\FrontendController;
 
 // Halaman Welcome
-Route::get('/', function () {
-    return view('frontend.welcome');
-});
+Route::get('/', [FrontendController::class, 'welcome'])->name('frontend.welcome');
+
 
 // ===============================
 // HOME PAGES
@@ -26,10 +25,10 @@ Route::get('/home-konferensi', [KonferensiController::class, 'index'])->name('fr
 // DETAIL EVENT
 // ===============================
 
-// Detail Event Musik (dynamic)
-Route::get('/event/musik', [MusikController::class, 'show'])->name('frontend.detail.musik');
+// Detail Event Musik (dynamic dari API Gateway /musikal/{id})
+Route::get('/event/musik/{id}', [MusikController::class, 'show'])->name('frontend.detail.musik');
 
-// Detail Event Konferensi (dynamic API)
+// Detail Event Konferensi (dynamic dari API Gateway /home-konferensi/{id})
 Route::get('/home-konferensi/detail/{id}', [KonferensiController::class, 'show'])->name('frontend.detail.konferensi');
 
 // ===============================
@@ -44,3 +43,15 @@ Route::get('/tiket/detail/{id}', [TiketController::class, 'show'])->name('fronte
 
 // Halaman daftar semua event gabungan (konferensi + musik)
 Route::get('/events', [EventController::class, 'index'])->name('frontend.events.index');
+
+Route::get('tiket/event/{event}', [TiketController::class, 'showByEvent'])
+    ->name('frontend.tiket.showByEvent');
+Route::get('/tiket/musikal/{id}', [TiketController::class, 'showMusikal'])
+    ->name('frontend.tiket.showMusikal');
+
+
+
+Route::prefix('/backend')->group(function () {
+    Route::get('/', [FrontendController::class, 'edit'])->name('backend.edit');
+    Route::put('/update', [FrontendController::class, 'update'])->name('backend.update');
+});

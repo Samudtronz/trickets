@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
-<body class="bg-white text-gray-900 font-sans">
+<body class="flex flex-col min-h-screen bg-white text-gray-900 font-sans">
 
     {{-- Preloader --}}
     <div class="loader-mask">
@@ -44,11 +44,12 @@
     @include('partials.navbar')
 
     {{-- Main Content --}}
-    <main>
+    <main class="flex-grow">
         @yield('content')
     </main>
 
     {{-- Footer --}}
+    @yield('footer')
     @includeWhen(View::exists('partials.footer'), 'partials.footer')
 
     <script>
@@ -58,4 +59,5 @@
         });
     </script>
 </body>
+
 </html>

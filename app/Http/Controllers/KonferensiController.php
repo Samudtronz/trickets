@@ -5,25 +5,35 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
 class KonferensiController extends Controller
 {
+    private string $baseUrl;
+    private array $headers;
+
+    public function __construct()
+    {
+        $this->baseUrl = rtrim(config('services.konferensi_service.url'), '/') . '/';
+        $this->headers = [
+            'gatewaykey' => config('services.konferensi_service.key'),
+        ];
+    }
+
     public function index(Request $request)
     {
-        $apiUrl = 'http://192.168.100.65/projek-services/gateway-service/api/Userkonferensi';
-
         try {
-            $response = Http::get($apiUrl);
-
+            $response = Http::withHeaders($this->headers)
+                ->get($this->baseUrl . 'api/Userkonferensi');
+         
             if ($response->successful()) {
                 $json = $response->json();
                 $data = $json['data'] ?? [];
 
                 $trending = collect($data)->sortByDesc('kuota')->first();
+                $trending = is_array($trending) ? $trending : null;
 
                 $eventsCollection = collect($data)
-                    ->reject(fn($item) => $trending && $item['id'] == $trending['id'])
+                    ->reject(fn($item) => $trending && $item['id'] == ($trending['id'] ?? null))
                     ->sortByDesc('tanggal')
                     ->values();
 
@@ -49,7 +59,6 @@ class KonferensiController extends Controller
             $events = new LengthAwarePaginator([], 0, 5, 1);
         }
 
-        // kalau request via AJAX → render partial
         if ($request->ajax()) {
             return view('home.partials.event-list', compact('events'))->render();
         }
@@ -59,27 +68,28 @@ class KonferensiController extends Controller
 
     public function show($id)
     {
-        $apiUrl = 'http://192.168.100.65/projek-services/gateway-service/api/Userkonferensi/' . $id;
+        $event = null;
 
         try {
-            $response = Http::get($apiUrl);
+            $response = Http::withHeaders([
+                'gatewaykey' => config('services.konferensi_service.key'),
+            ])->get(config('services.konferensi_service.url') . "api/Userkonferensi/{$id}");
 
+            // Ambil data jika API sukses
             if ($response->successful()) {
                 $event = $response->json();
-
-                // pastikan event punya ID, kalau tidak berarti kosong
-                if (!empty($event['id'])) {
-                    return view('frontend.detail.konferensi', compact('event'));
-                }
+                $event = is_array($event) ? $event : null;
             }
 
-            return view('detail.konferensi', ['event' => null]);
         } catch (\Exception $e) {
             \Log::error('Gagal mengambil detail konferensi', [
+                'id' => $id,
                 'message' => $e->getMessage()
             ]);
-
-            return view('detail.konferensi', ['event' => null]);
         }
+
+        // Render view, event bisa null kalau gagal
+        return view('frontend.detail.konferensi', compact('event'));
     }
+
 }

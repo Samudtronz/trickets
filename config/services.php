@@ -31,20 +31,23 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'auth_service' => [
-        'url' => env('AUTH_SERVICE_URL'),
-        'key' => env('GATEWAY_KEY_USER'),
-    ],
-
     'konferensi_service' => [
-        'url' => env('KONFERENSI_SERVICE_URL'),
-        'key' => env('GATEWAY_KEY_KONFERENSI'),
+        'url' => env('GATEWAY_URL', 'http://192.168.100.65/projek-services/gateway-service/'),
+        'key' => env('KEY_KONFERENSI', 'CON123'),
     ],
 
-    'tiket_service' => [
-        'url' => env('TIKET_SERVICE_URL'),
-        'key' => env('GATEWAY_KEY_TIKET'),
+    'tiketSamud_service' => [
+        'url' => env('GATEWAY_URL','http://192.168.100.65/projek-services/gateway-service/'),
+        'key' => env('KEY_TIKET','TIK123'),
     ],
 
+    'musikal_service' => [
+        'url' => env('MUSIKAL_SERVICE_URL_NITA','http://192.168.100.69/musikal/api-gateway/'),
+        'key' => env('GATEWAY_KEY_MUSIKAL_NITA','musikal123'),
+    ],
 
+    'tiketNita_service' => [
+        'url' => env('TIKET_SERVICE_URL_NITA','http://192.168.100.69/musikal/api-gateway/'),
+        'key' => env('GATEWAY_KEY_TIKET_NITA','TIK123'),
+    ],
 ];
