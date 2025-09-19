@@ -32,13 +32,13 @@ return [
     ],
 
     'konferensi_service' => [
-        'url' => env('GATEWAY_URL', 'http://192.168.100.65/projek-services/gateway-service/'),
-        'key' => env('KEY_KONFERENSI', 'CON123'),
+        'url' => env('KONFERENSI_SERVICE_URL_SAMUD', 'http://192.168.100.65/projek-services/gateway-service/'),
+        'key' => env('GATEWAY_KEY_KONFERNESI_SAMUD', 'CON123'),
     ],
 
     'tiketSamud_service' => [
-        'url' => env('GATEWAY_URL','http://192.168.100.65/projek-services/gateway-service/'),
-        'key' => env('KEY_TIKET','TIK123'),
+        'url' => env('KONFERENSI_SERVICE_URL_SAMUD','http://192.168.100.65/projek-services/gateway-service/'),
+        'key' => env('GATEWAY_KEY_TIKET_SAMUD','TIK123'),
     ],
 
     'musikal_service' => [

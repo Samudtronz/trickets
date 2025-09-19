@@ -6,8 +6,12 @@
         
         {{-- Logo --}}
         <div class="flex items-center space-x-3 pl-0 ml-0">
-            <img src="{{ asset('assets/images/logo/logo-only.png') }}" alt="Trickets Logo" class="w-30 h-20">
-            <span class="text-3xl font-black text-[#F26417]">Trickets</span>
+           <img src="{{ $konten['navbar_logo_url'] ?? asset('assets/images/logo/logo-only.png') }}"
+            alt="{{ $konten['navbar_brand'] ?? 'Trickets' }} Logo"
+            class="w-30 h-20">
+            <span class="text-3xl font-black text-[#F26417]">
+                {{ $konten['navbar_brand'] ?? 'Trickets' }}
+            </span>
         </div>
 
         <!-- Menu -->

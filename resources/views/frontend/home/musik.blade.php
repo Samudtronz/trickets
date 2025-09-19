@@ -10,9 +10,9 @@
     <div class="container mx-auto px-6 relative z-10 animate-fade-in-up">
         <div class="max-w-2xl space-y-6">
             @if (!empty($trending))
-                <h3 class="text-white text-lg font-semibold">EVENT TRENDING :</h3>
+                <h3 class="text-white text-lg font-semibold">{{ $konten['musical_event_trending_text'] ?? 'EVENT TRENDING :' }}</h3>
                 <h1 class="text-6xl lg:text-7xl font-black text-white">{{ $trending['judul'] ?? '-' }}</h1>
-                <p class="text-3xl font-extrabold text-primary-500">MUSICAL EVENT</p>
+                <p class="text-3xl font-extrabold text-primary-500">{{ $konten['trending_musical_title'] ?? 'MUSICAL EVENT' }}</p>
 
                 {{-- Tanggal & Lokasi --}}
                 <div class="flex items-center space-x-3 text-white text-lg">
@@ -25,7 +25,7 @@
 
                 {{-- Tombol --}}
                 <div class="flex space-x-4 pt-6">
-                    <a href="{{ route('frontend.tiket.showByEvent', $trending['id'] ?? 0) }}" 
+                    <a href="{{ route('frontend.tiket.showmusikal', $trending['id'] ?? 0) }}" 
                        class="btn-custom">
                        BELI TIKET
                     </a>
@@ -43,21 +43,31 @@
 
 {{-- COUNTDOWN --}}
 <section class="bg-black py-8">
+    @php
+        $countdownKeys = [
+            'trending_musical_countdown_hari' ?? ' hari',
+            'trending_musical_countdown_jam' ?? ' jam ',
+            'trending_musical_countdown_menit' ?? 'menit' ,
+            'trending_musical_countdown_detik' ??  'detik',
+        ];
+    @endphp
+
     <div class="flex justify-center gap-6" id="countdown">
-        @foreach (['HARI','JAM','MENIT','DETIK'] as $label)
+        @foreach ($countdownKeys as $key)
             <div class="bg-gray-800 text-center rounded-full w-28 h-28 flex flex-col items-center justify-center">
                 <span class="time text-3xl font-extrabold text-primary-500">00</span>
-                <span class="text-white text-sm font-semibold">{{ $label }}</span>
+                <span class="text-white text-sm font-semibold">
+                    {{ $konten[$key] ?? strtoupper(str_replace('trending_musical_countdown_', '', $key)) }}
+                </span>
             </div>
         @endforeach
     </div>
 </section>
 
+
 {{-- DAFTAR EVENT --}}
 <section class="bg-black py-16 px-6 lg:px-20">
-    <h2 class="text-3xl font-extrabold text-white mb-10 flex items-center">
-        <span class="text-primary-500 mr-3 text-4xl">▮</span> Daftar Event Musikal
-    </h2>
+    <h2 class="text-3xl font-extrabold text-white mb-10">{{ $konten['musical_event_list'] ?? 'Daftar Event Musikal' }}</h2>
 
     <div class="space-y-6">
         @forelse ($events as $event)
@@ -84,10 +94,16 @@
 
                 {{-- Buttons --}}
                 <div class="flex space-x-3">
-                    <a href="{{ route('frontend.tiket.showByEvent', $event['id'] ?? 0) }}" 
-                       class="bg-primary-500 text-white px-5 py-2 rounded-lg font-bold hover:bg-primary-600 transition">
-                       Beli Tiket
-                    </a>
+                    @if(!empty($event['id']))
+                        <a href="{{ route('frontend.tiket.showmusikal', $event['id']) }}" 
+                           class="bg-primary-500 text-white px-5 py-2 rounded-lg font-bold hover:bg-primary-600 transition">
+                           Beli Tiket
+                        </a>
+                    @else
+                        <span class="bg-gray-600 text-white px-5 py-2 rounded-lg font-bold cursor-not-allowed">
+                           Tiket Belum Ada
+                        </span>
+                    @endif
                     <a href="{{ route('frontend.detail.musik', $event['id'] ?? 0) }}" 
                        class="bg-blue-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-blue-700 transition">
                        Detail Event

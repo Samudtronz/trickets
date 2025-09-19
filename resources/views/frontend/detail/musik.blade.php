@@ -88,18 +88,18 @@
         {{-- SIDEBAR --}}
         <div class="bg-gray-900 p-6 rounded-xl space-y-6">
             <div class="text-center">
-                <h3 class="text-xl font-bold">Kuota & Tanggal</h3>
+                <h3 class="text-xl font-bold">{{ $konten['musical_sidebar_kuota_tanggal_title'] ?? 'Kuota & Tanggal' }}</h3>
 
                 <div class="mt-4">
-                    <p class="text-gray-400 mb-1">Sisa Kuota</p>
+                    <p class="text-gray-400 mb-1">{{ $konten['musical_sidebar_sisa_kuota_label'] ?? 'Sisa Kuota' }}</p>
                     <p class="text-4xl font-extrabold text-[#F26417]">
                         {{ $event['kuota'] ?? 'Tidak diketahui' }}
                     </p>
-                    <span class="text-sm text-gray-500">peserta</span>
+                    <span class="text-sm text-gray-500">{{ $konten['musical_sidebar_peserta_label'] ?? 'peserta' }}</span>
                 </div>
 
                 <div class="mt-6">
-                    <p class="text-gray-400 mb-1">Tanggal Event</p>
+                    <p class="text-gray-400 mb-1">{{ $konten['musical_sidebar_tanggal_event_label'] ?? 'Tanggal Event' }}</p>
                     <p class="text-lg font-semibold text-white">
                         @if (!empty($event['tanggal']))
                             {{ \Carbon\Carbon::parse($event['tanggal'])->format('d F Y') }}
@@ -112,7 +112,7 @@
 
             {{-- Countdown --}}
             <div class="text-center bg-gray-800 p-4 rounded-lg">
-                <h4 class="font-semibold mb-2">Hitung Mundur</h4>
+                <h4 class="font-semibold mb-2">{{ $konten['musical_countdown_title'] ?? 'Hitung Mundur' }}</h4>
                 <div id="countdown" class="text-lg font-bold">
                     @if (empty($event['tanggal']))
                         Tanggal belum ditentukan
@@ -120,7 +120,7 @@
                 </div>
             </div>
 
-            <a href="{{ route('frontend.tiket.showByEvent', $event['id'] ?? 0) }}"
+            <a href="{{ route('frontend.tiket.showmusikal', $event['id'] ?? 0) }}"
             class="block w-full bg-[#F26417] hover:bg-orange-600 text-center py-3 rounded-lg font-bold text-white transition">
                 BELI TIKET
             </a>
@@ -153,7 +153,11 @@
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                countdownEl.innerHTML = `${days} HARI ${hours} JAM ${minutes} MEN ${seconds} DET`;
+                countdownEl.innerHTML = `${days} {{ $konten['musical_countdown_label_hari'] ?? 'HARI' }} 
+                                         ${hours}  {{ $konten['musical_countdown_label_jam'] ?? 'JAMM' }} 
+                                         ${minutes}  {{ $konten['musical_countdown_label_menit'] ?? 'MENIT' }}  
+                                         ${seconds}  {{ $konten['musical_countdown_label_detik'] ?? 'DETIK' }} 
+                                         `;
             }, 1000);
         } else {
             countdownEl.innerHTML = "-";

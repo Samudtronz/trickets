@@ -4,13 +4,13 @@
         {{-- About --}}
         <div>
             {{-- Logo --}}
-                    <div class="flex items-center space-x-3 pl-0 ml-0">
-                        <img src="{{ asset('assets/images/logo/logo-only.png') }}" alt="Trickets Logo" class="w-30 h-20">
-                        <span class="text-3xl font-black text-[#F26417]">Trickets</span>
-                    </div>
-            <p class="text-sm leading-6">
-                Platform sederhana untuk mengelola event dan tiket.  
-                Pesan tiket mudah, cepat, dan aman.
+            <div class="flex items-center space-x-3">
+                <img src="{{ asset($konten['footer_logo']) }}" alt="{{ $konten['footer_brand'] }} Logo" class="w-30 h-20">
+                <span class="text-3xl font-black text-[#F26417]">{{ $konten['footer_brand'] }}</span>
+            </div>
+            {{-- Description --}}
+            <p class="text-sm leading-6 mt-3 md:mt-0 text-center md:text-left">
+                {{ $konten['footer_description'] }}
             </p>
         </div>
 
@@ -41,23 +41,18 @@
                             </a>
                         </li>
                     </ul>
-                </li><a href="{{ route('frontend.events.index') }}" class="hover:text-white transition">Events</a></li>
+                </li>
+                <li><a href="{{ route('frontend.events.index') }}" class="hover:text-white transition">Events</a></li>
+            </ul>
+            <ul>
+                <li><a href="{{ route('frontend.tiket.index') }}" class="hover:text-white transition">Tiket</a></li>
             </ul>
         </div>
 
-        {{-- Contact --}}
-        <div>
-            <h3 class="text-white font-bold text-lg mb-4">Hubungi Kami!</h3>
-            <ul class="space-y-2 text-sm">
-                <li>Email: support@trickets.com</li>
-                <li>Phone: +62 812-3456-7890</li>
-                <li>Location: Pekanbaru, Indonesia</li>
-            </ul>
-        </div>
     </div>
 
     {{-- Copyright --}}
     <div class="border-t border-gray-700 text-center py-4 text-sm">
-        <p>&copy; {{ date('Y') }} <span class=" font-black text-[#F26417]">Trickets</span>   All rights reserved.</p>
+        <p>&copy; {{ date('Y') }} <span class="font-black text-[#F26417]">{{ $konten['footer_brand'] }}</span> {{ $konten['footer_copyright'] }}</p>
     </div>
 </footer>

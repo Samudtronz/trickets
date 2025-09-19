@@ -31,7 +31,7 @@
             {{-- Event Info --}}
             <div class="flex flex-wrap items-center gap-4 text-lg font-semibold mt-4">
                 <span class="bg-gray-800 text-white px-3 py-2 rounded-lg flex items-center">
-                    📅 
+                    
                     @if (!empty($event['tanggal']))
                         {{ \Carbon\Carbon::parse($event['tanggal'])->translatedFormat('d F Y') }}
                     @else
@@ -40,15 +40,15 @@
                 </span>
 
                 <span class="bg-gray-800 text-white px-3 py-2 rounded-lg flex items-center">
-                    ⏰ {{ $event['waktu_perform'] ?? $event['waktu'] ?? 'Waktu belum ditentukan' }}
+                     {{ $event['waktu_perform'] ?? $event['waktu'] ?? 'Waktu belum ditentukan' }}
                 </span>
 
                 <span class="bg-gray-800 text-white px-3 py-2 rounded-lg flex items-center">
-                    📍 {{ $event['lokasi'] ?? 'Lokasi belum ditentukan' }}
+                     {{ $event['lokasi'] ?? 'Lokasi belum ditentukan' }}
                 </span>
 
                 <span class="bg-gray-800 text-white px-3 py-2 rounded-lg flex items-center">
-                    🎤 {{ $event['pembicara'] ?? 'Pembicara belum ditentukan' }}
+                    {{ $event['pembicara'] ?? 'Pembicara belum ditentukan' }}
                 </span>
             </div>
 
@@ -90,20 +90,26 @@
         {{-- SIDEBAR --}}
         <div class="bg-gray-900 p-6 rounded-xl space-y-6">
             <div class="text-center">
-                <h3 class="text-xl font-bold">Kuota & Tanggal</h3>
+                <h3 class="text-xl font-bold">
+                    {{ $konten['conference_sidebar_kuota_tanggal_title'] ?? 'Kuota & Tanggal' }}
+                </h3>
 
-                {{-- Kuota --}}
                 <div class="mt-4">
-                    <p class="text-gray-400 mb-1">Sisa Kuota</p>
+                    <p class="text-gray-400 mb-1">
+                        {{ $konten['conference_sidebar_sisa_kuota_label'] ?? 'Sisa Kuota' }}
+                    </p>
                     <p class="text-4xl font-extrabold text-[#F26417]">
                         {{ $event['kuota'] ?? 'Tidak diketahui' }}
                     </p>
-                    <span class="text-sm text-gray-500">peserta</span>
+                    <span class="text-sm text-gray-500">
+                        {{ $konten['conference_sidebar_peserta_label'] ?? 'peserta' }}
+                    </span>
                 </div>
 
-                {{-- Tanggal --}}
                 <div class="mt-6">
-                    <p class="text-gray-400 mb-1">Tanggal Event</p>
+                    <p class="text-gray-400 mb-1">
+                        {{ $konten['conference_sidebar_tanggal_event_label'] ?? 'Tanggal Event' }}
+                    </p>
                     <p class="text-lg font-semibold text-white">
                         @if (!empty($event['tanggal']))
                             {{ \Carbon\Carbon::parse($event['tanggal'])->format('d F Y') }}
@@ -114,11 +120,14 @@
                 </div>
             </div>
 
-            {{-- Countdown --}}
             <div class="text-center bg-gray-800 p-4 rounded-lg">
-                <h4 class="font-semibold mb-2">Hitung Mundur</h4>
+                <h4 class="font-semibold mb-2">
+                    {{ $konten['conference_countdown_title'] ?? 'Hitung Mundur' }}
+                </h4>
                 <div id="countdown" class="text-lg font-bold">
-                    @if (empty($eventDetail['tanggal']))
+                    @if (!empty($event['tanggal']))
+                        <!-- Countdown akan di-render oleh JS -->
+                    @else
                         Tanggal belum ditentukan
                     @endif
                 </div>
@@ -137,32 +146,39 @@
 @if (!empty($event['tanggal']))
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const dateStr = "{{ \Carbon\Carbon::parse($event['tanggal'])->format('Y-m-d') }}";
-        const eventDate = new Date(dateStr + "T00:00:00").getTime();
-        const countdownEl = document.getElementById("countdown");
+    const dateStr = "{{ \Carbon\Carbon::parse($event['tanggal'])->format('Y-m-d') ?? '' }}";
+    if (!dateStr) return;
 
-        if (!isNaN(eventDate)) {
-            const x = setInterval(function() {
-                const now = new Date().getTime();
-                const distance = eventDate - now;
+    const eventDate = new Date(dateStr + "T00:00:00").getTime();
+    const countdownEl = document.getElementById("countdown");
 
-                if (distance <= 0) {
-                    clearInterval(x);
-                    countdownEl.innerHTML = "Event sedang berlangsung!";
-                    return;
-                }
+    const labelHari   = "{{ $konten['conference_countdown_label_hari'] ?? 'HARI' }}";
+    const labelJam    = "{{ $konten['conference_countdown_label_jam'] ?? 'JAM' }}";
+    const labelMenit  = "{{ $konten['conference_countdown_label_menit'] ?? 'MEN' }}";
+    const labelDetik  = "{{ $konten['conference_countdown_label_detik'] ?? 'DET' }}";
 
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    if (!isNaN(eventDate)) {
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
 
-                countdownEl.innerHTML = `${days} HARI ${hours} JAM ${minutes} MEN ${seconds} DET`;
-            }, 1000);
-        } else {
-            countdownEl.innerHTML = "-";
-        }
-    });
+            if (distance <= 0) {
+                clearInterval(x);
+                countdownEl.innerHTML = "Event sedang berlangsung!";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownEl.innerHTML = `${days} ${labelHari} ${hours} ${labelJam} ${minutes} ${labelMenit} ${seconds} ${labelDetik}`;
+        }, 1000);
+    } else {
+        countdownEl.innerHTML = "-";
+    }
+});
 </script>
 @endif
 

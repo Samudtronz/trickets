@@ -15,5 +15,9 @@ class DatabaseSeeder extends Seeder
           $this->call([
             FrontendSeeder::class,
           ]);
+
+            $this->call([
+            UserSeeder::class,
+          ]);
     }
 }

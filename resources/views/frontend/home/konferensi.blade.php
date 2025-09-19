@@ -8,9 +8,11 @@
     style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('http://192.168.100.65/projek-services/konferensi-service/storage/{{ $trending['foto_event'] ?? 'assets/images/backgrounds/no-images.png' }}');">
     <div class="container mx-auto px-6 relative z-10 animate-fade-in-up">
         <div class="max-w-2xl space-y-6">
-            <h3 class="text-white text-lg font-semibold">EVENT TRENDING :</h3>
+        <h3 class="text-white text-lg font-semibold">
+            {{ $konten['conference_event_trending_text'] ?? 'EVENT TRENDING' }}
+        </h3>
             <h1 class="text-6xl lg:text-7xl font-black text-white">{{ $trending['judul'] ?? '-' }}</h1>
-            <p class="text-3xl font-extrabold text-primary-500">CONFERENCE EVENT</p>
+            <p class="text-3xl font-extrabold text-primary-500">{{ $konten['trending_conference_title'] ?? 'CONFERENCE EVENT' }}</p>
 
             <div class="flex items-center space-x-3 text-white text-lg">
                 <i class="fa-solid fa-calendar-days text-primary-500"></i>
@@ -71,19 +73,19 @@ document.addEventListener("DOMContentLoaded", function () {
         countdown.innerHTML = `
             <div class="bg-gray-800 text-center rounded-full w-28 h-28 flex flex-col items-center justify-center">
                 <span class="text-3xl font-extrabold text-primary-500">${days}</span>
-                <span class="text-white text-sm font-semibold">HARI</span>
+                <span class="text-white text-sm font-semibold">{{ $konten['trending_conference_countdown_hari'] ?? 'HARI' }}</span>
             </div>
             <div class="bg-gray-800 text-center rounded-full w-28 h-28 flex flex-col items-center justify-center">
                 <span class="text-3xl font-extrabold text-primary-500">${hours}</span>
-                <span class="text-white text-sm font-semibold">JAM</span>
+                <span class="text-white text-sm font-semibold">{{ $konten['trending_conference_countdown_jam'] ?? 'JAM' }}</span>
             </div>
             <div class="bg-gray-800 text-center rounded-full w-28 h-28 flex flex-col items-center justify-center">
                 <span class="text-3xl font-extrabold text-primary-500">${minutes}</span>
-                <span class="text-white text-sm font-semibold">MENIT</span>
+                <span class="text-white text-sm font-semibold">{{ $konten['trending_conference_countdown_menit'] ?? 'MENIT' }}</span>
             </div>
             <div class="bg-gray-800 text-center rounded-full w-28 h-28 flex flex-col items-center justify-center">
                 <span class="text-3xl font-extrabold text-primary-500">${seconds}</span>
-                <span class="text-white text-sm font-semibold">DETIK</span>
+                <span class="text-white text-sm font-semibold">{{ $konten['trending_conference_countdown_detik'] ?? 'DETIK' }}</span>
             </div>
         `;
     }
@@ -96,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 {{-- DAFTAR EVENT --}}
 <section class="bg-black py-16 px-6 lg:px-20">
-    <h2 class="text-3xl font-extrabold text-white mb-10">Daftar Event Konferensi</h2>
+    <h2 class="text-3xl font-extrabold text-white mb-10">{{ $konten['conference_event_list'] ?? 'Daftar Event Konferensi' }}</h2>
 
     <div id="event-list">
         @include('partials.event-list', ['events' => $events])

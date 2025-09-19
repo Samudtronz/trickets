@@ -9,9 +9,44 @@ class TiketController extends Controller
 {
     public function index()
     {
-        $tickets = ['regular'=>[], 'business'=>[], 'VIP'=>[]];
+        $ticketsMusikal = [
+            'regular' => [],
+            'business' => [],
+            'VIP' => []
+        ];
+
+        $ticketsKonferensi = [
+            'regular' => [],
+            'business' => [],
+            'VIP' => []
+        ];
 
         try {
+            // ====== AMBIL TIKET MUSIKAL ======
+            $ticketResponse = Http::withHeaders([
+                'X-GATEWAY-KEY' => 'tiket123'
+            ])->get('http://192.168.100.69/musikal/api-gateway/api/tiket');
+
+            $allTicketsMusikal = collect($ticketResponse->json()['data'] ?? []);
+
+            $eventResponse = Http::withHeaders([
+                'X-GATEWAY-KEY' => 'tiket123'
+            ])->get('http://192.168.100.69/musikal/api-gateway/api/musikal');
+
+            $allEventsMusikal = collect($eventResponse->json()['data'] ?? []);
+
+            foreach ($allTicketsMusikal as $ticket) {
+                $eventDetail = $allEventsMusikal->firstWhere('id', $ticket['id_event']) ?? [];
+                $tiketFull = array_merge($ticket, $eventDetail, ['jenis_event' => 'musikal']);
+
+                $jenis = strtolower($ticket['jenis_tiket'] ?? 'regular');
+                $mapJenis = ['regular' => 'regular', 'business' => 'business', 'vip' => 'VIP'];
+                if (isset($mapJenis[$jenis])) {
+                    $ticketsMusikal[$mapJenis[$jenis]][] = $tiketFull;
+                }
+            }
+
+            // ====== AMBIL TIKET KONFERENSI ======
             $tiketData = Http::withHeaders([
                 'gatewaykey' => config('services.tiketSamud_service.key'),
             ])->get(config('services.tiketSamud_service.url') . 'api/Usertiket')->json('data', []);
@@ -31,21 +66,21 @@ class TiketController extends Controller
             }
 
             foreach ($tiketData as $tiket) {
-                $eventDetail = $eventMap[$tiket['id_event']] ?? [
-                    'judul'=>'-', 'tanggal'=>now(), 'kuota'=>0, 'pembicara'=>null
-                ];
-                $tiketFull = array_merge($tiket, $eventDetail);
+                $eventDetail = $eventMap[$tiket['id_event']] ?? [];
+                $tiketFull = array_merge($tiket, $eventDetail, ['jenis_event' => 'konferensi']);
 
                 $jenis = strtolower($tiket['jenis_tiket'] ?? 'regular');
-                $mapJenis = ['regular'=>'regular','business'=>'business','vip'=>'VIP'];
-                if(isset($mapJenis[$jenis])) $tickets[$mapJenis[$jenis]][] = $tiketFull;
+                $mapJenis = ['regular' => 'regular', 'business' => 'business', 'vip' => 'VIP'];
+                if (isset($mapJenis[$jenis])) {
+                    $ticketsKonferensi[$mapJenis[$jenis]][] = $tiketFull;
+                }
             }
 
         } catch (\Exception $e) {
-            \Log::error('Gagal mengambil tiket/konferensi', ['message'=>$e->getMessage()]);
+            \Log::error('Gagal mengambil tiket gabungan', ['message' => $e->getMessage()]);
         }
 
-        return view('frontend.tiket.index', compact('tickets'));
+        return view('frontend.tiket.index', compact('ticketsMusikal', 'ticketsKonferensi'));
     }
 
     public function show($id)
@@ -54,21 +89,21 @@ class TiketController extends Controller
         $eventDetail = null;
 
         try {
-           $tiket = Http::withHeaders(['gatewaykey'=>config('services.tiketSamud_service.key')])
-            ->get(config('services.tiketSamud_service.url') . "api/Usertiket/{$id}")
-            ->json('data', null);
+            $tiket = Http::withHeaders(['gatewaykey' => config('services.tiketSamud_service.key')])
+                ->get(config('services.tiketSamud_service.url') . "api/Usertiket/{$id}")
+                ->json('data', null);
 
-           if($tiket && !empty($tiket['id_event'])) {
-                $eventDetail = Http::withHeaders(['gatewaykey'=>config('services.konferensi_service.key')])
+            if ($tiket && !empty($tiket['id_event'])) {
+                $eventDetail = Http::withHeaders(['gatewaykey' => config('services.konferensi_service.key')])
                     ->get(config('services.konferensi_service.url') . "api/Userkonferensi/{$tiket['id_event']}")
                     ->json('data', null);
             }
 
         } catch (\Exception $e) {
-            \Log::error('Gagal mengambil detail tiket', ['message'=>$e->getMessage()]);
+            \Log::error('Gagal mengambil detail tiket', ['message' => $e->getMessage()]);
         }
 
-        return view('frontend.tiket.show', compact('tiket','eventDetail'));
+        return view('frontend.tiket.show', compact('tiket', 'eventDetail'));
     }
 
     public function showByEvent($eventId)
@@ -78,9 +113,9 @@ class TiketController extends Controller
 
         try {
             $tiketData = Http::withHeaders([
-                'gatewaykey'=>config('services.tiketSamud_service.key')
+                'gatewaykey' => config('services.tiketSamud_service.key')
             ])->get(config('services.tiketSamud_service.url') . "api/Usertiket")
-            ->json('data', []);
+                ->json('data', []);
 
             if (!is_array($tiketData)) $tiketData = [];
 
@@ -92,52 +127,46 @@ class TiketController extends Controller
             }
 
             $eventDetail = Http::withHeaders([
-                'gatewaykey'=>config('services.konferensi_service.key')
+                'gatewaykey' => config('services.konferensi_service.key')
             ])->get(config('services.konferensi_service.url') . "api/Userkonferensi/{$eventId}")
-            ->json('data', null);
+                ->json('data', null);
 
             if (!is_array($eventDetail)) $eventDetail = null;
 
         } catch (\Exception $e) {
-            \Log::error('Gagal mengambil tiket/event', ['message'=>$e->getMessage()]);
+            \Log::error('Gagal mengambil tiket/event', ['message' => $e->getMessage()]);
         }
 
-        return view('frontend.tiket.show', compact('tiket','eventDetail'));
+        return view('frontend.tiket.show', compact('tiket', 'eventDetail'));
     }
 
-    // ======================
-    // Function baru: Tiket Nita langsung dari API Musikal
-    // ======================
-    public function showMusikal($id)
+     public function showMusikal($id)
     {
         $event = null;
+        $tiket = null;
 
         try {
-            $response = Http::withHeaders([
-                'X-GATEWAY-KEY' => 'musikal123'
+            // Ambil semua tiket
+            $ticketResponse = Http::withHeaders([
+                'X-GATEWAY-KEY' => 'tiket123'
+            ])->get('http://192.168.100.69/musikal/api-gateway/api/tiket');
+
+            $allTickets = collect($ticketResponse->json()['data'] ?? []);
+            $tiket = $allTickets->firstWhere('id_event', (int)$id);
+
+            // Ambil semua event
+            $eventResponse = Http::withHeaders([
+                'X-GATEWAY-KEY' => 'tiket123'
             ])->get('http://192.168.100.69/musikal/api-gateway/api/musikal');
 
-            if ($response->successful()) {
-                $allEvents = collect($response->json()['data'] ?? []);
-                $event = $allEvents->firstWhere('id', (int) $id);
+            $allEvents = collect($eventResponse->json()['data'] ?? []);
+            $event = $allEvents->firstWhere('id', (int)$id);
 
-                if (!$event) {
-                    $event = [
-                        'id' => 0,
-                        'judul' => 'Event Tidak Ditemukan',
-                        'deskripsi' => 'Data event tidak tersedia',
-                        'banner' => asset('assets/images/backgrounds/coachella.png'),
-                        'link_video' => null,
-                        'harga' => 0,
-                        'kuota' => 0,
-                        'tanggal' => null,
-                    ];
-                }
-            } else {
+            if (!$event) {
                 $event = [
                     'id' => 0,
-                    'judul' => 'API Sedang Bermasalah',
-                    'deskripsi' => 'Coba lagi nanti',
+                    'judul' => 'Event Tidak Ditemukan',
+                    'deskripsi' => 'Data event tidak tersedia',
                     'banner' => asset('assets/images/backgrounds/coachella.png'),
                     'link_video' => null,
                     'harga' => 0,
@@ -145,8 +174,9 @@ class TiketController extends Controller
                     'tanggal' => null,
                 ];
             }
+
         } catch (\Exception $e) {
-            \Log::error('Gagal mengambil event musikal', ['message'=>$e->getMessage()]);
+            \Log::error('Gagal mengambil event/tiket musikal', ['message' => $e->getMessage()]);
             $event = [
                 'id' => 0,
                 'judul' => 'Terjadi Kesalahan',
@@ -159,7 +189,6 @@ class TiketController extends Controller
             ];
         }
 
-        return view('frontend.tiket.showMusikal', compact('event'));
+        return view('frontend.tiket.showmusikal', compact('event', 'tiket'));
     }
-
 }
