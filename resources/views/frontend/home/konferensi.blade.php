@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
     <h2 class="text-3xl font-extrabold text-white mb-10">{{ $konten['conference_event_list'] ?? 'Daftar Event Konferensi' }}</h2>
 
     <div id="event-list">
-        @include('partials.event-list', ['events' => $events])
+        @include('frontend.event-lists.konferensi', ['events' => $events])
     </div>
 </section>
 

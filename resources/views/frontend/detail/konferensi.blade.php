@@ -2,21 +2,19 @@
 
 @section('content')
 
-
-
 {{-- HERO --}}
 @php
     $fotoEvent = $event['foto_event'] ?? null;
     $bgImage = $fotoEvent
         ? "http://192.168.100.65/projek-services/konferensi-service/storage/{$fotoEvent}"
-        : asset('assets/images/no-image.png'); // fallback gambar default (taruh di public/images/fallback-event.jpg)
+        : asset('assets/images/no-image.png'); 
 @endphp
 
 <section class="relative h-[70vh] bg-cover bg-center flex items-end"
     style="background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('{{ $bgImage }}');">
     <div class="container mx-auto px-6 pb-10 z-10">
         <h1 class="text-5xl lg:text-6xl font-extrabold text-white">
-           {{ $event['judul'] ?? 'JUDUL KONFERENSI' }}
+            {{ $event['judul'] ?? 'JUDUL KONFERENSI' }}
         </h1>
     </div>
 </section>
@@ -30,8 +28,7 @@
 
             {{-- Event Info --}}
             <div class="flex flex-wrap items-center gap-4 text-lg font-semibold mt-4">
-                <span class="bg-gray-800 text-white px-3 py-2 rounded-lg flex items-center">
-                    
+                <span class="bg-gray-800 text-white px-3 py-2 rounded-lg">
                     @if (!empty($event['tanggal']))
                         {{ \Carbon\Carbon::parse($event['tanggal'])->translatedFormat('d F Y') }}
                     @else
@@ -39,15 +36,15 @@
                     @endif
                 </span>
 
-                <span class="bg-gray-800 text-white px-3 py-2 rounded-lg flex items-center">
-                     {{ $event['waktu_perform'] ?? $event['waktu'] ?? 'Waktu belum ditentukan' }}
+                <span class="bg-gray-800 text-white px-3 py-2 rounded-lg">
+                    {{ $event['waktu_perform'] ?? $event['waktu'] ?? 'Waktu belum ditentukan' }}
                 </span>
 
-                <span class="bg-gray-800 text-white px-3 py-2 rounded-lg flex items-center">
-                     {{ $event['lokasi'] ?? 'Lokasi belum ditentukan' }}
+                <span class="bg-gray-800 text-white px-3 py-2 rounded-lg">
+                    {{ $event['lokasi'] ?? 'Lokasi belum ditentukan' }}
                 </span>
 
-                <span class="bg-gray-800 text-white px-3 py-2 rounded-lg flex items-center">
+                <span class="bg-gray-800 text-white px-3 py-2 rounded-lg">
                     {{ $event['pembicara'] ?? 'Pembicara belum ditentukan' }}
                 </span>
             </div>
@@ -66,6 +63,7 @@
             @php
                 $videoUrl = $event['link_video'] ?? $event['video'] ?? null;
                 $youtubeId = null;
+
                 if ($videoUrl) {
                     if (preg_match('/youtu\.be\/([^?&]+)/', $videoUrl, $m)) {
                         $youtubeId = $m[1];
@@ -112,7 +110,7 @@
                     </p>
                     <p class="text-lg font-semibold text-white">
                         @if (!empty($event['tanggal']))
-                            {{ \Carbon\Carbon::parse($event['tanggal'])->format('d F Y') }}
+                            {{ \Carbon\Carbon::parse($event['tanggal'])->translatedFormat('d F Y') }}
                         @else
                             Belum ditentukan
                         @endif
@@ -120,33 +118,33 @@
                 </div>
             </div>
 
+            {{-- Countdown --}}
             <div class="text-center bg-gray-800 p-4 rounded-lg">
                 <h4 class="font-semibold mb-2">
                     {{ $konten['conference_countdown_title'] ?? 'Hitung Mundur' }}
                 </h4>
                 <div id="countdown" class="text-lg font-bold">
                     @if (!empty($event['tanggal']))
-                        <!-- Countdown akan di-render oleh JS -->
+                        <!-- Countdown render by JS -->
                     @else
                         Tanggal belum ditentukan
                     @endif
                 </div>
             </div>
 
-            <a href="#"
-            class="block w-full bg-[#F26417] hover:bg-orange-600 text-center py-3 rounded-lg font-bold text-white transition">
+            <a href="{{ route('frontend.tiket.show', $event['id'] ?? 0) }}"
+                class="block w-full bg-[#F26417] hover:bg-orange-600 text-center py-3 rounded-lg font-bold text-white transition">
                 BELI TIKET
             </a>
         </div>
-
     </div>
 </section>
 
 {{-- COUNTDOWN SCRIPT --}}
 @if (!empty($event['tanggal']))
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-    const dateStr = "{{ \Carbon\Carbon::parse($event['tanggal'])->format('Y-m-d') ?? '' }}";
+document.addEventListener("DOMContentLoaded", function() {
+    const dateStr = "{{ \Carbon\Carbon::parse($event['tanggal'])->format('Y-m-d') }}";
     if (!dateStr) return;
 
     const eventDate = new Date(dateStr + "T00:00:00").getTime();
@@ -162,6 +160,12 @@
             const now = new Date().getTime();
             const distance = eventDate - now;
 
+            if (distance < -86400000) {
+                clearInterval(x);
+                countdownEl.innerHTML = "Event sudah berakhir!";
+                return;
+            }
+
             if (distance <= 0) {
                 clearInterval(x);
                 countdownEl.innerHTML = "Event sedang berlangsung!";
@@ -173,7 +177,8 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            countdownEl.innerHTML = `${days} ${labelHari} ${hours} ${labelJam} ${minutes} ${labelMenit} ${seconds} ${labelDetik}`;
+            countdownEl.innerHTML =
+                `${days} ${labelHari} ${hours} ${labelJam} ${minutes} ${labelMenit} ${seconds} ${labelDetik}`;
         }, 1000);
     } else {
         countdownEl.innerHTML = "-";

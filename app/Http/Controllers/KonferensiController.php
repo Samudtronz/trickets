@@ -24,11 +24,12 @@ class KonferensiController extends Controller
         try {
             $response = Http::withHeaders($this->headers)
                 ->get($this->baseUrl . 'api/Userkonferensi');
-         
+
             if ($response->successful()) {
                 $json = $response->json();
                 $data = $json['data'] ?? [];
 
+                // trending event
                 $trending = collect($data)->sortByDesc('kuota')->first();
                 $trending = is_array($trending) ? $trending : null;
 
@@ -37,10 +38,12 @@ class KonferensiController extends Controller
                     ->sortByDesc('tanggal')
                     ->values();
 
-                // pagination manual
-                $perPage = 5;
-                $currentPage = $request->input('page', 1);
-                $pagedData = $eventsCollection->slice(($currentPage - 1) * $perPage, $perPage)->values();
+                // ✅ pagination fix
+                $perPage = 4;
+                $currentPage = LengthAwarePaginator::resolveCurrentPage();
+                $pagedData = $eventsCollection
+                    ->forPage($currentPage, $perPage)
+                    ->values();
 
                 $events = new LengthAwarePaginator(
                     $pagedData,
@@ -51,20 +54,22 @@ class KonferensiController extends Controller
                 );
             } else {
                 $trending = null;
-                $events = new LengthAwarePaginator([], 0, 5, 1);
+                $events = new LengthAwarePaginator([], 0, 4, 1);
             }
         } catch (\Exception $e) {
             \Log::error('Gagal mengambil konferensi', ['message' => $e->getMessage()]);
             $trending = null;
-            $events = new LengthAwarePaginator([], 0, 5, 1);
+            $events = new LengthAwarePaginator([], 0, 4, 1);
         }
 
+        // kalau request ajax, render partial
         if ($request->ajax()) {
-            return view('home.partials.event-list', compact('events'))->render();
+            return view('frontend.event-lists.konferensi', compact('events'))->render();
         }
 
         return view('frontend.home.konferensi', compact('trending', 'events'));
     }
+
 
     public function show($id)
     {

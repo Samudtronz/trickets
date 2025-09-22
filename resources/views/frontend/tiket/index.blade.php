@@ -12,7 +12,7 @@
     <div class="relative z-10 text-center mb-16">
         <h1 class="text-4xl md:text-5xl font-extrabold tracking-wide text-white relative inline-block">
             <span class="px-6 py-2 border-y-2 border-[#F26417]">
-                🎟 Pilih Tiket Kamu
+                 Pilih Tiket Kamu
             </span>
         </h1>
         <p class="text-gray-400 text-lg max-w-2xl mx-auto mt-6">
@@ -56,6 +56,11 @@
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-12">
                         @forelse(($event['tickets'][$type] ?? []) as $tiket)
+
+                            @php
+                                $isExpired = !empty($tiket['tanggal']) && \Carbon\Carbon::parse($tiket['tanggal'])->isPast();
+                            @endphp
+
                             {{-- Card --}}
                             <div class="relative group bg-gradient-to-br from-white/10 to-white/5 
                                 backdrop-blur-xl border border-white/10 rounded-3xl p-8 
@@ -66,6 +71,10 @@
                                 @if(($tiket['status'] ?? '') === 'sold')
                                     <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full font-bold text-sm uppercase shadow-lg animate-pulse">
                                         SOLD
+                                    </div>
+                                @elseif($isExpired)
+                                    <div class="absolute top-4 right-4 bg-gray-500 text-white px-3 py-1 rounded-full font-bold text-sm uppercase shadow-lg animate-pulse">
+                                        TIMEOUT
                                     </div>
                                 @elseif(($tiket['status'] ?? '') === 'hot')
                                     <div class="absolute top-4 right-4 bg-yellow-400 text-black px-3 py-1 rounded-full font-bold text-sm uppercase shadow-lg animate-bounce">
@@ -96,14 +105,14 @@
                                 @if($event['customTitle'] === 'Musikal Spektakuler')
                                     <a href="{{ route('frontend.tiket.showmusikal', $tiket['id']) }}"
                                        class="mt-8 block text-center bg-gradient-to-r from-[#F26417] to-[#FF7A00] py-3 rounded-xl font-bold text-white shadow-md hover:scale-105 transition
-                                       {{ ($tiket['status'] ?? '') === 'sold' ? 'pointer-events-none opacity-50' : '' }}">
-                                       Beli Tiket
+                                       {{ ($tiket['status'] ?? '') === 'sold' || $isExpired ? 'pointer-events-none opacity-50' : '' }}">
+                                       {{ $isExpired ? 'TIDAK TERSEDIA' : 'Beli Tiket' }}
                                     </a>
                                 @elseif($event['customTitle'] === 'Konferensi Inspiratif')
                                     <a href="{{ route('frontend.tiket.show', $tiket['id']) }}"
                                        class="mt-8 block text-center bg-gradient-to-r from-[#F26417] to-[#FF7A00] py-3 rounded-xl font-bold text-white shadow-md hover:scale-105 transition
-                                       {{ ($tiket['status'] ?? '') === 'sold' ? 'pointer-events-none opacity-50' : '' }}">
-                                       Beli Tiket
+                                       {{ ($tiket['status'] ?? '') === 'sold' || $isExpired ? 'pointer-events-none opacity-50' : '' }}">
+                                       {{ $isExpired ? 'TIDAK TERSEDIA' : 'Beli Tiket' }}
                                     </a>
                                 @endif
                             </div>

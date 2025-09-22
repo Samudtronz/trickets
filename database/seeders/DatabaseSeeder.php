@@ -16,8 +16,8 @@ class DatabaseSeeder extends Seeder
             FrontendSeeder::class,
           ]);
 
-            $this->call([
-            UserSeeder::class,
-          ]);
+          //   $this->call([
+          //   UserSeeder::class,
+          // ]);
     }
 }

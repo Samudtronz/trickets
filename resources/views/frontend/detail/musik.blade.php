@@ -132,38 +132,50 @@
 {{-- COUNTDOWN SCRIPT --}}
 @if (!empty($event['tanggal']))
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const dateStr = "{{ \Carbon\Carbon::parse($event['tanggal'])->format('Y-m-d') }}";
-        const eventDate = new Date(dateStr + "T00:00:00").getTime();
-        const countdownEl = document.getElementById("countdown");
+document.addEventListener("DOMContentLoaded", function() {
+    const dateStr = "{{ \Carbon\Carbon::parse($event['tanggal'])->format('Y-m-d') }}";
+    const eventDate = new Date(dateStr + "T00:00:00").getTime();
+    const countdownEl = document.getElementById("countdown");
+    const ticketBtn = document.querySelector("a[href*='tiket']");
 
-        if (!isNaN(eventDate)) {
-            const x = setInterval(function() {
-                const now = new Date().getTime();
-                const distance = eventDate - now;
+    if (!isNaN(eventDate)) {
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = eventDate - now;
 
-                if (distance <= 0) {
-                    clearInterval(x);
-                    countdownEl.innerHTML = "Event sedang berlangsung!";
-                    return;
+            if (distance < -86400000) { 
+                // lewat 1 hari atau lebih
+                clearInterval(x);
+                countdownEl.innerHTML = "Event sudah berakhir!";
+                if(ticketBtn){
+                    ticketBtn.classList.add("pointer-events-none", "opacity-50");
+                    ticketBtn.innerText = "TIKET TIDAK TERSEDIA";
                 }
+                return;
+            }
 
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            if (distance <= 0) {
+                clearInterval(x);
+                countdownEl.innerHTML = "Event sedang berlangsung!";
+                return;
+            }
 
-                countdownEl.innerHTML = `${days} {{ $konten['musical_countdown_label_hari'] ?? 'HARI' }} 
-                                         ${hours}  {{ $konten['musical_countdown_label_jam'] ?? 'JAMM' }} 
-                                         ${minutes}  {{ $konten['musical_countdown_label_menit'] ?? 'MENIT' }}  
-                                         ${seconds}  {{ $konten['musical_countdown_label_detik'] ?? 'DETIK' }} 
-                                         `;
-            }, 1000);
-        } else {
-            countdownEl.innerHTML = "-";
-        }
-    });
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownEl.innerHTML = `${days} {{ $konten['musical_countdown_label_hari'] ?? 'HARI' }} 
+                                     ${hours} {{ $konten['musical_countdown_label_jam'] ?? 'JAM' }} 
+                                     ${minutes} {{ $konten['musical_countdown_label_menit'] ?? 'MEN' }}  
+                                     ${seconds} {{ $konten['musical_countdown_label_detik'] ?? 'DET' }}`;
+        }, 1000);
+    } else {
+        countdownEl.innerHTML = "-";
+    }
+});
 </script>
 @endif
+
 
 @endsection

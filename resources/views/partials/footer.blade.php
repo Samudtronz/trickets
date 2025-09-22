@@ -5,7 +5,8 @@
         <div>
             {{-- Logo --}}
             <div class="flex items-center space-x-3">
-                <img src="{{ asset($konten['footer_logo']) }}" alt="{{ $konten['footer_brand'] }} Logo" class="w-30 h-20">
+                <img src="{{ asset('storage/' . $konten['footer_logo']) }}"                
+                alt="{{ $konten['footer_brand'] }} Logo" class="w-30 h-20">
                 <span class="text-3xl font-black text-[#F26417]">{{ $konten['footer_brand'] }}</span>
             </div>
             {{-- Description --}}

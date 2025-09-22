@@ -7,7 +7,6 @@
 
     <link rel="shortcut icon" href="{{ asset('assets/images/logo/logo-only.png') }}">
 
-
     <!-- Tailwind via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -52,12 +51,16 @@
     @yield('footer')
     @includeWhen(View::exists('partials.footer'), 'partials.footer')
 
+    {{-- JS --}}
     <script>
         // Preloader fade out
         window.addEventListener('load', () => {
             document.querySelector('.loader-mask').style.display = 'none';
         });
     </script>
-</body>
+    <script src="https://unpkg.com/alpinejs" defer></script>
 
+    <script src="{{ asset('js/search.js') }}"></script>
+
+</body>
 </html>

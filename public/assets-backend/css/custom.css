@@ -1,0 +1,115 @@
+
+/* ================= CUSTOM THEME ORANGE ================== */
+:root {
+  /* Ubah warna utama jadi oranye */
+  --main-h: 22;
+  --main-s: 91%;
+  --main-l: 53%;
+
+  /* Sidebar aktif/hover ganti oranye */
+}
+
+/* ================= Sidebar ================== */
+.sidebar-list__item.activePage .sidebar-list__link,
+.sidebar-list__item:hover .sidebar-list__link {
+  background-color: #F26417 !important;
+  color: #f5f5f5 !important;
+}
+
+.sidebar-list__item.activePage .sidebar-list__icon .icon-active,
+.sidebar-list__item:hover .sidebar-list__icon .icon-active {
+  filter: brightness(0) invert(1); /* biar icon aktif jadi putih */
+}
+
+
+/* ================= Buttons ================== */
+.btn-primary {
+  background-color: hsl(var(--main)) !important;
+  border-color: hsl(var(--main)) !important;
+  color: #f5f5f5 !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: hsl(var(--main-h), var(--main-s), 45%) !important;
+  border-color: hsl(var(--main-h), var(--main-s), 45%) !important;
+}
+
+/* ================= Links ================== */
+a,
+a:hover,
+a:focus {
+  color: hsl(var(--main)) !important;
+}
+
+/* ================= Progress bar ================== */
+.progress-bar {
+  background-color: hsl(var(--main)) !important;
+}
+
+/* ================= Badges / Pills ================== */
+.badge-primary,
+.nav-pills .nav-link.active {
+  background-color: hsl(var(--main)) !important;
+  
+}
+
+/* ================= RESET ORANGE BACKGROUND ================= */
+body,
+.dashboard,
+.dashboard::before,
+.dashboard::after,
+.dashboard-body,
+.dashboard-body::before,
+.dashboard-body::after {
+  background: #f5f5f5 !important;
+  background-image: none !important;
+}
+
+/* Kalau header section masih oranye */
+.dashboard-body__content > section,
+.dashboard-body__content > div {
+  background: #f5f5f5 !important;
+  background-image: none !important;
+}
+
+/* Sidebar juga kalau masih ada oranye */
+.sidebar {
+  background: #f5f5f5 !important;
+}
+/* ================= SEARCH BAR ================== */
+.search-box,
+.header-search,
+.dashboard-nav .search-box {
+  background: #f1f1f1 !important;   /* abu-abu terang */
+  border: 1px solid #ddd !important;
+  border-radius: 30px !important;
+  color: #333 !important;
+}
+
+/* Input dalam search */
+.search-box input {
+  background: transparent !important;
+  color: #333 !important;
+}
+
+.search-box input::placeholder {
+  color: #666 !important;
+  opacity: 1 !important;
+}
+
+/* Icon search & hamburger */
+.search-box i,
+.dashboard-nav i,
+.dashboard-nav .fa,
+.sidebar-toggle i {
+  color: #333 !important;   /* hitam/abu gelap */
+  filter: none !important;
+}
+
+/* Icon circle menu (hamburger) */
+.sidebar-toggle {
+  background: #f1f1f1 !important;
+  border: 1px solid #ddd !important;
+  color: #333 !important;
+}

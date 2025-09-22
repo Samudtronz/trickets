@@ -60,10 +60,20 @@ class FrontendSeeder extends Seeder
             // 'navbar_logo'         => '',
 
             // Footer
-            'footer_logo' => 'assets/images/logo/logo-only.png',
-            'footer_brand' => 'Trickets',
-            'footer_description' => 'Platform sederhana untuk mengelola event dan tiket. Pesan tiket mudah, cepat, dan aman.',
-            'footer_copyright' => 'All rights reserved.'
+            // 'footer_logo' => 'assets/images/logo/logo-only.png',
+            // 'footer_brand' => 'Trickets',
+            // 'footer_description' => 'Platform sederhana untuk mengelola event dan tiket. Pesan tiket mudah, cepat, dan aman.',
+            // 'footer_copyright' => 'All rights reserved.'\
+
+            // Tiket
+            // 'ticket_section_title'   => 'Pilih Tiket Kamu',
+            // 'ticket_section_subtitle'   => 'Temukan tiket terbaik & jadilah bagian dari event impianmu dengan pengalaman tak terlupakan.',
+            // 'ticket_musikal_title'   => 'Musikal Spektakuler',
+            // 'ticket_konferensi_title'   => 'Konferensi Inspiratif'
+
+            // Event List
+            // 'events_musikal_title'  => 'Event Musikal',
+            // 'events_konferensi_title' => 'Event Konferensi',
         ];
 
             foreach ($defaults as $key => $value) {

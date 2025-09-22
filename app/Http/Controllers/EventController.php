@@ -118,4 +118,88 @@ class EventController extends Controller
             'popularEvents'  => $popularEvents,
         ]);
     }
+
+    // ======================
+    // 🔎 Search Full Page
+    // ======================
+    public function search(Request $request)
+    {
+        $query = strtolower($request->get('q', ''));
+
+        $allEvents = collect(array_merge(
+            $this->getKonferensi(),
+            $this->getMusikal()
+        ));
+
+        $results = $allEvents->filter(function ($event) use ($query) {
+            return str_contains(strtolower($event['judul']), $query) ||
+                   str_contains(strtolower($event['lokasi']), $query);
+        });
+
+        return view('frontend.events.index', [
+            'konferensi'     => $this->getKonferensi(),
+            'musikal'        => $this->getMusikal(),
+            'trending'       => null,
+            'popularEvents'  => $results,
+            'searchQuery'    => $query,
+        ]);
+    }
+
+    // ======================
+    // 🔎 Search Ajax (live preview)
+    // ======================
+ 
+
+    // ======================
+    // Helpers
+    // ======================
+    private function getKonferensi()
+    {
+        $konferensi = [];
+        try {
+            $data = Http::withHeaders([
+                'gatewaykey' => config('services.konferensi_service.key')
+            ])->get(config('services.konferensi_service.url') . 'api/Userkonferensi')
+              ->json('data', []);
+
+            foreach ($data as $item) {
+                $konferensi[] = [
+                    'id'    => $item['id'],
+                    'judul' => $item['judul'] ?? '-',
+                    'lokasi'=> $item['lokasi'] ?? '-',
+                    'foto'  => isset($item['foto_event'])
+                        ? url("http://192.168.100.65/projek-services/konferensi-service/storage/{$item['foto_event']}")
+                        : asset('assets/images/no-image.png'),
+                    'tipe'  => 'konferensi',
+                ];
+            }
+        } catch (\Exception $e) {
+            \Log::error('Gagal ambil konferensi (search)', ['msg' => $e->getMessage()]);
+        }
+        return $konferensi;
+    }
+
+    private function getMusikal()
+    {
+        $musikal = [];
+        try {
+            $data = Http::withHeaders([
+                'gatewaykey' => 'musikal123'
+            ])->get('http://192.168.100.69/musikal/api-gateway/api/musikal')
+              ->json('data', []);
+
+            foreach ($data as $item) {
+                $musikal[] = [
+                    'id'    => $item['id'],
+                    'judul' => $item['judul'] ?? '-',
+                    'lokasi'=> $item['lokasi'] ?? '-',
+                    'foto'  => $item['foto_event_url'] ?? asset('assets/images/no-image.png'),
+                    'tipe'  => 'musikal',
+                ];
+            }
+        } catch (\Exception $e) {
+            \Log::error('Gagal ambil musikal (search)', ['msg' => $e->getMessage()]);
+        }
+        return $musikal;
+    }
 }

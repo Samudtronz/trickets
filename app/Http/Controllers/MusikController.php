@@ -5,18 +5,32 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class MusikController extends Controller
 {
-    public function index(Request $request)
-    {
-        // Ambil semua event dari API
-        $response = Http::withHeaders([
-            'X-GATEWAY-KEY' => 'musikal123'
-        ])->get('http://192.168.100.69/musikal/api-gateway/api/musikal');
+    protected string $apiUrl;
+    protected array $headers;
 
-        $trending = null;
-        $events   = new LengthAwarePaginator([], 0, 5, 1);
+    public function __construct()
+    {
+        $this->apiUrl = "http://192.168.100.69/musikal/api-gateway/api/musikal";
+        $this->headers = [
+            'X-GATEWAY-KEY' => 'musikal123'
+        ];
+    }
+
+    /**
+     * Home Musik (Hero + Trending + Countdown + event list)
+     */
+   public function index(Request $request)
+{
+    $trending = null;
+    $events = new LengthAwarePaginator([], 0, 4, 1);
+
+    try {
+        $response = Http::withHeaders($this->headers)->get($this->apiUrl);
 
         if ($response->successful()) {
             $allEvents = collect($response->json()['data'] ?? []);
@@ -24,67 +38,73 @@ class MusikController extends Controller
             // trending = kuota terbesar
             $trending = $allEvents->sortByDesc('kuota')->first();
 
-            // event lain selain trending
-            $eventsCollection = $allEvents->reject(fn($item) => $trending && $item['id'] == $trending['id'])
-                                          ->sortByDesc('tanggal')
-                                          ->values();
+            // ambil semua event selain trending, urut berdasarkan tanggal desc
+            $eventsCollection = $allEvents
+                ->reject(fn($item) => $trending && (($item['id'] ?? null) == ($trending['id'] ?? null)))
+                ->sortByDesc('tanggal')
+                ->values();
 
-            // pagination manual
-            $perPage     = 5;
-            $currentPage = $request->input('page', 1);
-            $pagedData   = $eventsCollection->slice(($currentPage - 1) * $perPage, $perPage)->values();
+            // pagination manual (4 per page)
+            $perPage = 4;
+            $currentPage = LengthAwarePaginator::resolveCurrentPage();
+            $pagedData = $eventsCollection->forPage($currentPage, $perPage);
 
             $events = new LengthAwarePaginator(
                 $pagedData,
                 $eventsCollection->count(),
                 $perPage,
                 $currentPage,
-                ['path' => $request->url(), 'query' => $request->query()]
+                [
+                    'path'  => $request->url(),
+                    'query' => $request->query(),
+                ]
             );
         }
-
-        return view('frontend.home.musik', compact('trending', 'events'));
+    } catch (Exception $e) {
+        Log::error('MusikController@index error: ' . $e->getMessage());
     }
 
+    return view('frontend.home.musik', compact('trending', 'events'));
+}
+
+
+    /**
+     * Detail Event Musik
+     */
     public function show($id)
     {
-        // Ambil detail event dari API
-        $response = Http::withHeaders([
-            'X-GATEWAY-KEY' => 'musikal123'
-        ])->get("http://192.168.100.69/musikal/api-gateway/api/musikal/{$id}");
+        try {
+            $response = Http::withHeaders($this->headers)->get("{$this->apiUrl}/{$id}");
 
-        if ($response->successful()) {
-            $event = $response->json()['data'] ?? null;
-
-            if (!$event) {
-                $event = [
-                    'id'        => 0,
-                    'judul'     => 'Event Tidak Ditemukan',
-                    'deskripsi' => 'Data event tidak tersedia',
-                    'lokasi'    => null,
-                    'tanggal'   => null,
-                    'waktu_perform' => null,
-                    'kuota'     => 0,
-                    'link_video'=> null,
-                    'genre'     => null,
-                    'foto_event_url' => asset('assets/images/backgrounds/coachella.png')
-                ];
+            if ($response->successful()) {
+                $event = $response->json()['data'] ?? null;
+                if (!$event) {
+                    $event = $this->fallbackEvent("Event Tidak Ditemukan", "Data event tidak tersedia");
+                }
+            } else {
+                $event = $this->fallbackEvent("Event Tidak Tersedia", "API sedang bermasalah, coba lagi nanti.");
             }
-        } else {
-            $event = [
-                'id'        => 0,
-                'judul'     => 'Event Tidak Tersedia',
-                'deskripsi' => 'API sedang bermasalah, coba lagi nanti.',
-                'lokasi'    => null,
-                'tanggal'   => null,
-                'waktu_perform' => null,
-                'kuota'     => 0,
-                'link_video'=> null,
-                'genre'     => null,
-                'foto_event_url' => asset('assets/images/backgrounds/coachella.png')
-            ];
+        } catch (Exception $e) {
+            Log::error("MusikController@show error: {$e->getMessage()}");
+            $event = $this->fallbackEvent("Event Tidak Tersedia", "API sedang bermasalah, coba lagi nanti.");
         }
 
         return view('frontend.detail.musik', compact('event'));
+    }
+
+    private function fallbackEvent($judul, $deskripsi)
+    {
+        return [
+            'id' => 0,
+            'judul' => $judul,
+            'deskripsi' => $deskripsi,
+            'lokasi' => null,
+            'tanggal' => null,
+            'waktu_perform' => null,
+            'kuota' => 0,
+            'link_video' => null,
+            'genre' => null,
+            'foto_event_url' => asset('assets/images/backgrounds/coachella.png'),
+        ];
     }
 }
