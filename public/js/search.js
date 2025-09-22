@@ -74,10 +74,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     matches.forEach(item => {
                         const a = document.createElement("a");
 
+                        // --- link detail per id ---
                         if (item.type === "konferensi") {
-                            a.href = `/konferensi/detail/${item.id}`;
-                        } else {
-                            a.href = `/musik/detail/${item.id}`;
+                            a.href = `http://192.168.100.65/trickets/home-konferensi/detail/${item.id}`;
+                        } else if (item.type === "musik") {
+                            a.href = `http://192.168.100.65/trickets/event/musik/${item.id}`;
                         }
 
                         // --- base url sesuai tipe ---
