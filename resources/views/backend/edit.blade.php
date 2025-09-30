@@ -15,21 +15,22 @@
                     <div class="card mb-4">
                         <div class="card-header bg-primary text-white">Welcome</div>
                         <div class="card-body">
-                            <div class="mb-3">
-                                <label class="form-label">Judul (home_title)</label>
-                                <input type="text" name="title" class="form-control"
-                                    value="{{ old('title', $konten['home_title'] ?? '') }}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Tagline (home_tagline)</label>
-                                <input type="text" name="tagline" class="form-control"
-                                    value="{{ old('tagline', $konten['home_tagline'] ?? '') }}">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Deskripsi (home_description)</label>
-                                <textarea name="description" rows="3" class="form-control">{{ old('description', $konten['home_description'] ?? '') }}</textarea>
-                            </div>
+                        <div class="mb-3">
+                        <label class="form-label">Judul</label>
+                        <input type="text" name="home_title" class="form-control"
+                            value="{{ old('home_title', $konten['home_title'] ?? '') }}">
+                    </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">Tagline</label>
+                        <input type="text" name="home_tagline" class="form-control"
+                            value="{{ old('home_tagline', $konten['home_tagline'] ?? '') }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea name="home_description" rows="3" class="form-control">{{ old('home_description', $konten['home_description'] ?? '') }}</textarea>
+                    </div>
                             {{-- Background --}}
                             <div class="mb-3">
                                 <label class="form-label">Background</label>
