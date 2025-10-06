@@ -25,13 +25,13 @@ class TiketController extends Controller
             // ====== AMBIL TIKET MUSIKAL ======
             $ticketResponse = Http::withHeaders([
                 'X-GATEWAY-KEY' => 'tiket123'
-            ])->get('http://192.168.100.69/musikal/api-gateway/api/tiket');
+            ])->get('http://192.168.100.70/musikal/api-gateway/api/tiket');
 
             $allTicketsMusikal = collect($ticketResponse->json()['data'] ?? []);
 
             $eventResponse = Http::withHeaders([
                 'X-GATEWAY-KEY' => 'tiket123'
-            ])->get('http://192.168.100.69/musikal/api-gateway/api/musikal');
+            ])->get('http://192.168.100.70/musikal/api-gateway/api/musikal');
 
             $allEventsMusikal = collect($eventResponse->json()['data'] ?? []);
 
@@ -149,7 +149,7 @@ class TiketController extends Controller
             // Ambil semua tiket
             $ticketResponse = Http::withHeaders([
                 'X-GATEWAY-KEY' => 'tiket123'
-            ])->get('http://192.168.100.69/musikal/api-gateway/api/tiket');
+            ])->get('http://192.168.100.70/musikal/api-gateway/api/tiket');
 
             $allTickets = collect($ticketResponse->json()['data'] ?? []);
             $tiket = $allTickets->firstWhere('id_event', (int)$id);
@@ -157,7 +157,7 @@ class TiketController extends Controller
             // Ambil semua event
             $eventResponse = Http::withHeaders([
                 'X-GATEWAY-KEY' => 'tiket123'
-            ])->get('http://192.168.100.69/musikal/api-gateway/api/musikal');
+            ])->get('http://192.168.100.70/musikal/api-gateway/api/musikal');
 
             $allEvents = collect($eventResponse->json()['data'] ?? []);
             $event = $allEvents->firstWhere('id', (int)$id);

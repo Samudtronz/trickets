@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trickets Admin - Konferensi</title>
+    <title>Trickets Admin</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset('assets-backend/images/logo/trickets-logo-only.png') }}">

@@ -15,7 +15,7 @@ class MusikController extends Controller
 
     public function __construct()
     {
-        $this->apiUrl = "http://192.168.100.69/musikal/api-gateway/api/musikal";
+        $this->apiUrl = "http://192.168.100.70/musikal/api-gateway/api/musikal";
         $this->headers = [
             'X-GATEWAY-KEY' => 'musikal123'
         ];

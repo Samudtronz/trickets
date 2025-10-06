@@ -67,7 +67,7 @@ class EventController extends Controller
         try {
             $dataMusikal = Http::withHeaders([
                 'gatewaykey' => 'musikal123'
-            ])->get('http://192.168.100.69/musikal/api-gateway/api/musikal')
+            ])->get('http://192.168.100.70/musikal/api-gateway/api/musikal')
               ->json('data', []);
 
             if (!empty($dataMusikal)) {
@@ -185,7 +185,7 @@ class EventController extends Controller
         try {
             $data = Http::withHeaders([
                 'gatewaykey' => 'musikal123'
-            ])->get('http://192.168.100.69/musikal/api-gateway/api/musikal')
+            ])->get('http://192.168.100.70/musikal/api-gateway/api/musikal')
               ->json('data', []);
 
             foreach ($data as $item) {

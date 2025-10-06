@@ -42,12 +42,12 @@ return [
     ],
 
     'musikal_service' => [
-        'url' => env('MUSIKAL_SERVICE_URL_NITA','http://192.168.100.69/musikal/api-gateway/'),
+        'url' => env('MUSIKAL_SERVICE_URL_NITA','http://192.168.100.70/musikal/api-gateway/'),
         'key' => env('GATEWAY_KEY_MUSIKAL_NITA','musikal123'),
     ],
 
     'tiketNita_service' => [
-        'url' => env('TIKET_SERVICE_URL_NITA','http://192.168.100.69/musikal/api-gateway/'),
+        'url' => env('TIKET_SERVICE_URL_NITA','http://192.168.100.70/musikal/api-gateway/'),
         'key' => env('GATEWAY_KEY_TIKET_NITA','TIK123'),
     ],
 ];
